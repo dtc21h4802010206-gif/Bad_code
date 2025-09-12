@@ -1,66 +1,154 @@
-import java.util.*;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-class Student {
-    String id;
-    String name;
-    int age;
-    double gpa;
+namespace SchoolManagement
+{
+    // --- Entity lớp Student ---
+    public class Student
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public double GPA { get; set; }
 
-    Student(String id, String name, int age, double gpa) {
-        this.id = id; this.name = name; this.age = age; this.gpa = gpa;
+        public override string ToString()
+        {
+            return $"ID: {Id}, Name: {Name}, Age: {Age}, GPA: {GPA}";
+        }
     }
 
-    @Override
-    public String toString() {
-        return id + " | " + name + " | " + age + " | " + gpa;
+    // --- Service quản lý sinh viên ---
+    public class StudentService
+    {
+        private List<Student> students = new List<Student>();
+
+        public void AddStudent()
+        {
+            Console.Write("Nhập id: ");
+            string id = Console.ReadLine();
+            Console.Write("Nhập tên: ");
+            string name = Console.ReadLine();
+            Console.Write("Nhập tuổi: ");
+            int age = int.Parse(Console.ReadLine());
+            Console.Write("Nhập GPA: ");
+            double gpa = double.Parse(Console.ReadLine());
+
+            students.Add(new Student { Id = id, Name = name, Age = age, GPA = gpa });
+            Console.WriteLine("✅ Thêm sinh viên thành công!");
+        }
+
+        public void RemoveStudent()
+        {
+            Console.Write("Nhập id cần xóa: ");
+            string id = Console.ReadLine();
+            var student = students.FirstOrDefault(s => s.Id == id);
+            if (student != null)
+            {
+                students.Remove(student);
+                Console.WriteLine("✅ Đã xóa sinh viên.");
+            }
+            else Console.WriteLine("❌ Không tìm thấy sinh viên.");
+        }
+
+        public void UpdateStudent()
+        {
+            Console.Write("Nhập id cần cập nhật: ");
+            string id = Console.ReadLine();
+            var student = students.FirstOrDefault(s => s.Id == id);
+            if (student != null)
+            {
+                Console.Write("Tên mới: ");
+                student.Name = Console.ReadLine();
+                Console.Write("Tuổi mới: ");
+                student.Age = int.Parse(Console.ReadLine());
+                Console.Write("GPA mới: ");
+                student.GPA = double.Parse(Console.ReadLine());
+                Console.WriteLine("✅ Cập nhật thành công!");
+            }
+            else Console.WriteLine("❌ Không tìm thấy sinh viên.");
+        }
+
+        public void ShowAll()
+        {
+            if (students.Count == 0) Console.WriteLine("Danh sách rỗng.");
+            foreach (var s in students) Console.WriteLine(s);
+        }
+
+        public void FindByName()
+        {
+            Console.Write("Nhập tên: ");
+            string name = Console.ReadLine();
+            var result = students.Where(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            foreach (var s in result) Console.WriteLine("🔎 " + s);
+        }
+
+        public void FindGoodStudents()
+        {
+            var good = students.Where(s => s.GPA > 8.0);
+            foreach (var s in good) Console.WriteLine("🌟 Sinh viên giỏi: " + s);
+        }
+
+        public void SortByName()
+        {
+            students = students.OrderBy(s => s.Name).ToList();
+            Console.WriteLine("📑 Đã sắp xếp theo tên.");
+        }
+
+        public void SortByGPA()
+        {
+            students = students.OrderByDescending(s => s.GPA).ToList();
+            Console.WriteLine("📑 Đã sắp xếp theo GPA.");
+        }
     }
-}
 
-public class CleanStudentProgram {
-    static List<Student> students = new ArrayList<>();
+    // --- Chương trình chính ---
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            StudentService studentService = new StudentService();
+            int menu = 0;
+            while (menu != 99)
+            {
+                Console.WriteLine("============= MENU CHÍNH =============");
+                Console.WriteLine("1. Quản lý Sinh viên");
+                Console.WriteLine("99. Thoát");
+                Console.Write("Nhập lựa chọn: ");
+                menu = int.Parse(Console.ReadLine());
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int choice;
-        do {
-            System.out.println("\n--- MENU ---");
-            System.out.println("1. Them SV");
-            System.out.println("2. Xoa SV");
-            System.out.println("3. Cap nhat SV");
-            System.out.println("4. Hien thi tat ca");
-            System.out.println("5. Sap xep theo GPA");
-            System.out.println("6. Thoat");
-            System.out.print("Chon: ");
-            choice = sc.nextInt(); sc.nextLine();
+                if (menu == 1)
+                {
+                    int smenu = 0;
+                    while (smenu != 9)
+                    {
+                        Console.WriteLine("--- QUẢN LÝ SINH VIÊN ---");
+                        Console.WriteLine("1. Thêm SV");
+                        Console.WriteLine("2. Xóa SV");
+                        Console.WriteLine("3. Cập nhật SV");
+                        Console.WriteLine("4. Hiển thị tất cả SV");
+                        Console.WriteLine("5. Tìm SV theo tên");
+                        Console.WriteLine("6. Tìm SV GPA > 8");
+                        Console.WriteLine("7. Sắp xếp theo tên");
+                        Console.WriteLine("8. Sắp xếp theo GPA");
+                        Console.WriteLine("9. Quay lại");
+                        Console.Write("Nhập lựa chọn: ");
+                        smenu = int.Parse(Console.ReadLine());
 
-            switch (choice) {
-                case 1 -> {
-                    System.out.print("ID: "); String id = sc.nextLine();
-                    System.out.print("Ten: "); String name = sc.nextLine();
-                    System.out.print("Tuoi: "); int age = sc.nextInt();
-                    System.out.print("GPA: "); double gpa = sc.nextDouble(); sc.nextLine();
-                    students.add(new Student(id, name, age, gpa));
-                }
-                case 2 -> {
-                    System.out.print("Nhap ID can xoa: "); String id = sc.nextLine();
-                    students.removeIf(s -> s.id.equals(id));
-                }
-                case 3 -> {
-                    System.out.print("Nhap ID cap nhat: "); String id = sc.nextLine();
-                    for (Student s : students) {
-                        if (s.id.equals(id)) {
-                            System.out.print("Ten moi: "); s.name = sc.nextLine();
-                            System.out.print("Tuoi moi: "); s.age = sc.nextInt();
-                            System.out.print("GPA moi: "); s.gpa = sc.nextDouble(); sc.nextLine();
+                        switch (smenu)
+                        {
+                            case 1: studentService.AddStudent(); break;
+                            case 2: studentService.RemoveStudent(); break;
+                            case 3: studentService.UpdateStudent(); break;
+                            case 4: studentService.ShowAll(); break;
+                            case 5: studentService.FindByName(); break;
+                            case 6: studentService.FindGoodStudents(); break;
+                            case 7: studentService.SortByName(); break;
+                            case 8: studentService.SortByGPA(); break;
                         }
                     }
                 }
-                case 4 -> students.forEach(System.out::println);
-                case 5 -> {
-                    students.sort(Comparator.comparingDouble(s -> -s.gpa));
-                    students.forEach(System.out::println);
-                }
             }
-        } while (choice != 6);
+        }
     }
 }
