@@ -1,3 +1,22 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SchoolManagement
+{
+    // --- Entity lớp Student ---
+    public class Student
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public double GPA { get; set; }
+
+        public override string ToString()
+        {
+            return $"ID: {Id}, Name: {Name}, Age: {Age}, GPA: {GPA}";
+        }
+    }
 
     // --- Service quản lý sinh viên ---
     public class StudentService
